@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Hello</h1>
+    <input type="text" name="message" id="message" />
+    <button onclick="send()">Send</button>
+    <div id="messages" style="width: 50%; margin: 0 auto"></div>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script type="module">
+      import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
+    </script>
+    <script>
+      const socket = io();
+      socket.on('sending', (data) => {
+        const messagesDIV = document.querySelector('#messages');
+        if (socket.id == data.id) {
+          messagesDIV.innerHTML += `<h1 style='color:blue;transform:translateX(100%)'>${data.message}</h1>`;
+        } else {
+          messagesDIV.innerHTML += `<h1 style='color:red ;transform:translateX(0)'>${data.message}</h1>`;
+        }
+      });
+      socket.on('reci', (res) => {
+        console.log(res);
+      });
+      function send() {
+        let inpu = document.querySelector('#message');
+        socket.emit('send', inpu.value);
+      }
+    </script>
+  </body>
+</html>
